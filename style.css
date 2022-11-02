@@ -1,0 +1,113 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: linear-gradient(#727272, #3f3f3f);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#todoMaster {
+  position: relative;
+  margin: 200px auto 200px auto;
+  width: 400px;
+  min-height: 600px;
+  background-color: rgb(53, 53, 53);
+  border-radius: 20px;
+  color: white;
+  padding-bottom: 70px;
+}
+
+#todoTitle {
+  cursor: pointer;
+  margin: 20px auto;
+  width: fit-content;
+  max-width: 85%;
+  padding: 2px 4px;
+  text-align: center;
+  font: 1.2em "Fira Sans", sans-serif;
+}
+
+#todoTitle:focus {
+  cursor: text;
+}
+
+#addTodo {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  bottom: 10px;
+  background-color: #ffffff;
+  border-radius: 100px;
+  font-size: 24px;
+  border: none;
+  width: 50px;
+  height: 50px;
+}
+
+#addTodo:hover {
+  background-color: #d3d3d3;
+}
+
+#addTodo:active {
+  box-shadow: 0px 0px 3px 1px #00000085;
+}
+
+#todoList {
+  width: 85%;
+  margin: 0 auto;
+}
+
+.taskDiv {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 10px;
+  line-height: 28px;
+}
+
+.taskDiv:hover,
+.taskDiv div:focus {
+  background-color: rgb(83, 83, 83);
+  border-radius: 4px;
+}
+
+.taskDiv [type="checkbox"] {
+  flex-shrink: 0;
+  height: 15px;
+  width: 15px;
+  margin-right: 10px;
+}
+
+.taskDiv [contenteditable="true"] {
+  font-size: 20px;
+  min-width: 50%;
+  padding: 0px 4px;
+  flex-grow: 1;
+}
+
+.taskDiv div[data-editing="false"]:hover {
+  cursor: pointer;
+}
+
+.taskDiv div[data-completed="true"] {
+  text-decoration: line-through;
+}
+
+.taskDiv button {
+  flex-shrink: 0;
+  align-self: center;
+  height: 20px;
+  width: 20px;
+  visibility: hidden;
+}
+
+.taskDiv:hover div + button {
+  visibility: visible;
+}
+
+.taskDiv div:focus {
+  outline: none;
+}
