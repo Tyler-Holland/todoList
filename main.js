@@ -3,6 +3,8 @@ import './style.css'
 const addTD = document.getElementById("addTodo");
 const tdList = document.getElementById("todoList");
 const tdTitle = document.getElementById("todoTitle");
+const newListBtn = document.getElementById("createNewList");
+const taskList = document.getElementById("taskList");
 
 let currentList;
 
@@ -32,6 +34,7 @@ function exitEditMode(e) {
 
 function drawTodoList() {
   tdList.innerHTML = "";
+  taskList.innerHTML = "";
 
   tdTitle.innerText = currentList.title;
   tdTitle.addEventListener('focusin', enterEditMode);
@@ -43,6 +46,32 @@ function drawTodoList() {
 
   drawTasks(unfinishedTasks);
   drawTasks(finishedTasks);
+  createListDropdown();
+}
+
+function createListDropdown() {
+  const localStorageKeys = Object.keys(localStorage);
+  const todoLists = localStorageKeys.filter(key => key.match(/tdl-/));
+
+  todoLists.forEach(listID => {
+    const list = JSON.parse(localStorage.getItem(listID));
+
+    const div = document.createElement('div');
+    div.innerText = list.title;
+    div.dataset.listID = listID;
+
+    div.addEventListener('click', changeCurrentList)
+
+    taskList.append(div);
+  })
+}
+
+function changeCurrentList(e) {
+  const listID = e.target.dataset.listID;
+  
+  localStorage.setItem('currentListID', listID);
+  currentList = JSON.parse(localStorage.getItem(listID));
+  drawTodoList();
 }
 
 function drawTasks(taskList) {
@@ -143,11 +172,27 @@ function updateDB() {
   drawTodoList();
 }
 
+function createNewList() {
+  const currentListID = `tdl-${Date.now()}`;
+  const date = new Date().toISOString().substr(0, 10);
+  const newTodoListObj = {
+    "title": `Todo List: ${date}`,
+    "tasks": []
+  }
+  localStorage.setItem("currentListID", currentListID);
+  localStorage.setItem(currentListID, JSON.stringify(newTodoListObj));
+
+  currentList = JSON.parse(localStorage.getItem(localStorage.getItem("currentListID")));
+  drawTodoList();
+}
+newListBtn.addEventListener('click', createNewList);
+
 function initialLoad() {
   if (!localStorage.getItem("currentListID")) {
     const currentListID = `tdl-${Date.now()}`;
+    const date = new Date().toISOString().substr(0, 10);
     const newTodoListObj = {
-      "title": "New Todo List",
+      "title": `Todo List: ${date}`,
       "tasks": []
     }
     localStorage.setItem("currentListID", currentListID);

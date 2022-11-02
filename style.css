@@ -21,18 +21,66 @@ body {
   padding-bottom: 70px;
 }
 
+#todoHeader {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 #todoTitle {
   cursor: pointer;
   margin: 20px auto;
   width: fit-content;
   max-width: 85%;
-  padding: 2px 4px;
-  text-align: center;
+  padding: 2px 5px;
   font: 1.2em "Fira Sans", sans-serif;
+  border-radius: 4px;
 }
 
 #todoTitle:focus {
   cursor: text;
+}
+
+#todoTitle:hover {
+  background-color: #535353;
+}
+
+#dropdownContainer {
+  position: absolute;
+  top: 20px;
+}
+
+#dropdownBtn {
+  margin-right: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+#dropdownList {
+  position: absolute;
+  visibility: hidden;
+  top: 0px;
+  left: -100px;
+  padding-top: 25px;
+  min-width: 200px;
+  background: #535353;
+  text-align: center;
+}
+
+#dropdownBtn:hover + #dropdownList,
+#dropdownList:hover {
+  visibility: visible;
+  width: fit-content;
+}
+
+#createNewList {
+  margin-top: 20px;
+}
+
+#taskList div:hover,
+#createNewList:hover {
+  background-color: #636363;
+  cursor: pointer;
 }
 
 #addTodo {
@@ -66,6 +114,7 @@ body {
   align-items: baseline;
   margin-bottom: 10px;
   line-height: 28px;
+  padding: 0 5px;
 }
 
 .taskDiv:hover,
