@@ -10,13 +10,14 @@
 <body>
   <div id="todoMaster">
     <div id="todoHeader">
-      <div id="todoTitle" tabindex="0" contenteditable="true">
+      <div id="todoTitle" class="title" tabindex="0" contenteditable="true">
         Custom title here
       </div>
 
       <div id="dropdownContainer">
-          <button id="dropdownBtn">V</button>
+          <div id="dropdownBtn">+</div>
           <div id="dropdownList">
+            <div id="dropdownTitle" class="title">Stored Todo Lists</div>
             <div id="taskList"></div>
            <div id="createNewList">New List</div>
           </div>
