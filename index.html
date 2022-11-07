@@ -4,33 +4,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="/node_modules/@fortawesome/fontawesome-free/css/all.css" rel="stylesheet">
   <title>Todo App</title>
 </head>
 
 <body>
   <div id="todoMaster">
-    <div id="todoHeader">
-      <div id="titleContainer">
-        <div id="todoTitle" class="title" tabindex="0" contenteditable="true">
-          Custom title here
+
+    <div id="homePage">
+      <div id="listOfListsTitle">Todo Lists</div>
+      <div id="homePageListOfLists"></div>
+    </div>
+
+
+
+    <div id="currentTodoListPage">
+      <div id="todoHeader">
+        <div id="titleContainer">
+          <div id="todoTitle" class="title" tabindex="0" contenteditable="true">
+            Custom title here
+          </div>
+        </div>
+
+        <div id="dropdownContainer">
+          <div id="dropdownBtn">v</div>
+          <div id="dropdownList">
+            <div id="dropdownTitle" class="title">Stored Todo Lists</div>
+            <div id="taskList"></div>
+            <div id="createNewList">--create new list--</div>
+          </div>
         </div>
       </div>
 
-      <div id="dropdownContainer">
-        <div id="dropdownBtn">+</div>
-        <div id="dropdownList">
-          <div id="dropdownTitle" class="title">Stored Todo Lists</div>
-          <div id="taskList"></div>
-          <div id="createNewList">--create new list--</div>
-        </div>
+      <div id="todoList"></div>
+
+      <button id="addTodo">+</button>
+    </div>
+
+    <div id="appFooter">
+      <div class="thinLine"></div>
+      <div id="appNavbar">
+        <button id="homeBtn" class="btn" tabindex="0">
+          <i class="fa-solid fa-house navbarIcon"></i>
+          <div class="btnLineHeight">Home</div>
+        </button>
+
+        <button id="favoriteListBtn" class="btn" tabindex="0">
+          <i class="fa-regular fa-star navbarIcon"></i>
+          <div class="btnLineHeight">Favorite</div>
+        </button>
       </div>
     </div>
-
-    <div id="todoList">
-
-    </div>
-
-    <button id="addTodo">+</button>
   </div>
   <script type="module" src="/main.js"></script>
 </body>

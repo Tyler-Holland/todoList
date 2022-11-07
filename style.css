@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
 
-  font-family: "Fira Sans", sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
@@ -13,14 +13,56 @@ body {
 }
 
 #todoMaster {
+  display: flex;
+  flex-direction: column;
   position: relative;
   margin: 200px auto 200px auto;
   width: 400px;
   min-height: 600px;
-  background-color: rgb(53, 53, 53);
+  background-color: #241721;
   border-radius: 20px;
   color: white;
-  padding-bottom: 70px;
+}
+
+#currentTodoListPage {
+  display: none;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+#statsPage {
+  display: none;
+  flex-grow: 1;
+}
+
+#homePage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+}
+
+#homePageListOfLists {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+}
+
+.homePageListName {
+  width: 100%;
+  text-align: center;
+  padding: 5px 0;
+}
+
+.homePageListName:hover,
+.homePageListName:focus {
+  background-color: #2c1f29;
+  cursor: pointer;
+}
+
+#listOfListsTitle {
+  margin: 15px 0;
 }
 
 #todoHeader {
@@ -121,7 +163,7 @@ body {
 }
 
 .taskDiv:hover div + .deleteBtn {
-  display: block;
+  visibility: visible;
 }
 
 .dropdownTaskDiv {
@@ -138,10 +180,7 @@ body {
 }
 
 #addTodo {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0);
-  bottom: 10px;
+  align-self: center;
   background-color: #ffffff;
   border-radius: 100px;
   font-size: 24px;
@@ -162,6 +201,7 @@ body {
 #todoList {
   width: 85%;
   margin: 0 auto;
+  flex-grow: 1;
 }
 
 .taskDiv {
@@ -175,7 +215,7 @@ body {
 
 .taskDiv:hover,
 .taskDiv div:focus {
-  background-color: rgb(83, 83, 83);
+  background-color: #535353;
   border-radius: 4px;
 }
 
@@ -207,4 +247,78 @@ body {
 
 .title {
   font-weight: bold;
+}
+
+#appFooter {
+  display: flex;
+  flex-direction: column;
+}
+
+#appNavbar {
+  display: flex;
+  flex-basis: 50px;
+  justify-content: space-around;
+}
+
+.thinLine {
+  margin-top: 15px;
+  height: 2px;
+  background-color: #2c1f29;
+}
+
+#appNavbar button {
+  text-align: center;
+  flex-grow: 1;
+}
+
+.btnLineHeight {
+  margin: 10px 0 15px 0;
+}
+
+#appNavbar :first-child {
+  border-bottom-left-radius: 20px;
+}
+
+#appNavbar :last-child {
+  border-bottom-right-radius: 20px;
+}
+
+#homeBtn div {
+  border-bottom-left-radius: 20px;
+}
+
+#appNavbar div:hover {
+  background-color: #2c1f29;
+  cursor: pointer;
+}
+
+.navbarIcon {
+  font-size: 24px;
+}
+
+.btn {
+  background-color: #241721;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  /* outline: none; */
+  cursor: pointer;
+}
+
+.btn:hover,
+.btn:focus {
+  background-color: #2c1f29;
+  cursor: pointer;
+}
+
+.customHR {
+  width: 100%;
+  height: 3px;
+  background-color: #2c1f29;
+}
+
+.favorites {
+  float: right;
 }

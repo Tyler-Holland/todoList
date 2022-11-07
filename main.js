@@ -6,9 +6,110 @@ const tdTitle = document.getElementById("todoTitle");
 const newListBtn = document.getElementById("createNewList");
 const taskList = document.getElementById("taskList");
 const dropdownList = document.getElementById("dropdownList");
+const currentTodoListPage = document.getElementById("currentTodoListPage");
+const homePage = document.getElementById("homePage");
+const homePageListOfLists = document.getElementById("homePageListOfLists")
+const homeBtn = document.getElementById("homeBtn");
+const favoriteListBtn = document.getElementById("favoriteListBtn");
 
 let currentList;
 let currentListID = localStorage.getItem("currentListID");
+
+
+
+
+function openHomeScreen() {
+  currentTodoListPage.style.display = "none";
+  homePage.style.display = "flex";
+
+  const listOfListIDs = Object.keys(localStorage).filter(key => key.match(/tdl-/));
+  homePageListOfLists.innerHTML = "";
+
+  listOfListIDs.forEach((listID, idx) => {
+    const list = JSON.parse(localStorage.getItem(listID));
+
+    const div = document.createElement('div');
+    div.className = "homePageListName";
+    div.innerText = list.title;
+    div.dataset.listID = listID;
+    div.tabIndex = "0";
+
+    const icon = document.createElement('i');
+    if (listID === localStorage.getItem('favoriteListID')) {
+      icon.classList = "fa-solid fa-star favorites";
+    } else {
+      icon.classList = "fa-regular fa-star favorites";
+
+    }
+
+
+    div.insertAdjacentElement('beforeend', icon);
+
+    div.addEventListener('click', (e) => {
+      const listID = e.target.dataset.listID;
+
+      if (listID) {
+        openList(listID);
+      }
+
+      const isFavoriteBtn = e.target.className.includes("favorites");
+      if (isFavoriteBtn) {
+        const previousFavoriteListID = localStorage.getItem('favoriteListID');
+
+        if (previousFavoriteListID) {
+          const previousFavoriteList = JSON.parse(localStorage.getItem(previousFavoriteListID));
+          previousFavoriteList.isFavorite = false;
+          localStorage.setItem(previousFavoriteListID, JSON.stringify(previousFavoriteList));
+        }
+
+        const newFavoriteListID = e.target.parentNode.dataset.listID;
+        localStorage.setItem('favoriteListID', newFavoriteListID);
+
+        const favoriteList = JSON.parse(localStorage.getItem(newFavoriteListID));
+        favoriteList.isFavorite = true;
+        localStorage.setItem(newFavoriteListID, JSON.stringify(favoriteList));
+
+        openHomeScreen();
+      }
+
+    })
+
+    div.addEventListener('keypress', (e) => {
+      const key = e.code;
+
+      if (key === "Space" || key === "Enter") {
+        openList(e.target.dataset.listID);
+      }
+    })
+
+    const customHR = document.createElement('div');
+    customHR.className = "customHR";
+
+    homePageListOfLists.append(div);
+    if (idx < listOfListIDs.length - 1) {
+      homePageListOfLists.append(customHR);
+    }
+  })
+}
+homeBtn.addEventListener('click', openHomeScreen);
+
+function openFavoriteList() {
+  homePage.style.display = "none";
+  currentTodoListPage.style.display = "flex";
+
+  const favoriteListID = localStorage.getItem("favoriteListID");
+
+  openList(favoriteListID);
+}
+favoriteListBtn.addEventListener('click', openFavoriteList);
+
+function openList(listID) {
+  homePage.style.display = "none";
+  currentTodoListPage.style.display = "flex";
+
+  updateCurrentListID(listID);
+  drawTodoList();
+}
 
 function enterEditMode(e) {
   e.target.dataset.editing = "true";
@@ -251,7 +352,9 @@ function createNewList() {
   const date = new Date().toISOString().substr(0, 10);
   const newTodoListObj = {
     "title": `Todo List: ${date}`,
-    "tasks": []
+    "tasks": [],
+    "dateCreated": Date.now(),
+    "isFavorite": false
   }
   currentListID = newListID;
   localStorage.setItem("currentListID", currentListID);
@@ -293,6 +396,7 @@ function initialLoad() {
 
   currentList = JSON.parse(localStorage.getItem(currentListID));
   drawTodoList();
+  openHomeScreen();
 }
 
 initialLoad();
