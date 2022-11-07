@@ -5,8 +5,10 @@ const tdList = document.getElementById("todoList");
 const tdTitle = document.getElementById("todoTitle");
 const newListBtn = document.getElementById("createNewList");
 const taskList = document.getElementById("taskList");
+const dropdownList = document.getElementById("dropdownList");
 
 let currentList;
+let currentListID = localStorage.getItem("currentListID");
 
 function enterEditMode(e) {
   e.target.dataset.editing = "true";
@@ -16,6 +18,22 @@ function enterEditMode(e) {
 function exitEditMode(e) {
   const target = e.target;
   target.dataset.editing = "false";
+
+  if (target.innerText.trim() === "") {
+    if (target.dataset.originalValue === "") {
+      currentList.tasks.every((task, idx) => {
+        if (target.id === task.id) {
+          currentList.tasks.splice(idx, 1);
+          updateDB();
+          return false;
+        }
+        return true;
+      })
+    } else {
+      target.innerText = target.dataset.originalValue;
+    }
+
+  }
 
   if (target.id === "todoTitle" && target.innerText !== target.dataset.originalValue) {
     currentList.title = target.innerText;
@@ -51,25 +69,81 @@ function drawTodoList() {
 
 function createListDropdown() {
   const localStorageKeys = Object.keys(localStorage);
-  const todoLists = localStorageKeys.filter(key => key.match(/tdl-/));
+  const todoLists = localStorageKeys.filter(key => key.match(/tdl-/)).sort();
 
   todoLists.forEach(listID => {
     const list = JSON.parse(localStorage.getItem(listID));
 
+    const masterDiv = document.createElement('div');
+    masterDiv.dataset.listID = listID;
+    masterDiv.className = "dropdownTaskDiv";
+
     const div = document.createElement('div');
     div.innerText = list.title;
-    div.dataset.listID = listID;
 
     div.addEventListener('click', changeCurrentList)
+    masterDiv.append(div);
 
-    taskList.append(div);
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = "deleteBtn";
+    deleteBtn.innerText = "X";
+    deleteBtn.addEventListener("click", deleteList);
+    masterDiv.append(deleteBtn);
+
+    taskList.append(masterDiv);
   })
 }
 
+function deleteList(e) {
+  const target = e.target;
+  const listID = target.parentNode.dataset.listID;
+  const targetList = JSON.parse(localStorage.getItem(listID));
+
+  const div = document.createElement('div');
+  div.id = "confirmListDelete";
+  div.innerText = `Click to confirm deleting list: ${targetList.title}`;
+
+  div.addEventListener('mouseleave', (e) => {
+    e.target.remove();
+  })
+
+  div.addEventListener('click', (e) => {
+    e.target.parentNode.remove();
+    localStorage.removeItem(listID);
+
+    if (listID === currentListID) {
+      const replacementListID = Object.keys(localStorage).filter(key => key.match(/tdl-/)).sort()[0];
+
+      if (!replacementListID) {
+        const newListID = `tdl-${Date.now()}`;
+        const date = new Date().toISOString().substr(0, 10);
+        const newTodoListObj = {
+          "title": `Todo List: ${date}`,
+          "tasks": []
+        }
+        currentListID = newListID;
+        localStorage.setItem("currentListID", currentListID);
+        localStorage.setItem(newListID, JSON.stringify(newTodoListObj));
+
+        currentList = JSON.parse(localStorage.getItem(currentListID));
+      }
+
+      if (replacementListID) {
+        updateCurrentListID(replacementListID);
+      }
+
+      drawTodoList();
+    }
+  })
+
+  target.insertAdjacentElement("afterend", div);
+}
+
 function changeCurrentList(e) {
-  const listID = e.target.dataset.listID;
-  
-  localStorage.setItem('currentListID', listID);
+  const listID = e.target.parentNode.dataset.listID;
+
+  currentListID = listID;
+  localStorage.setItem('currentListID', currentListID);
   currentList = JSON.parse(localStorage.getItem(listID));
   drawTodoList();
 }
@@ -97,12 +171,13 @@ function drawTasks(taskList) {
 
     masterDiv.append(taskDiv);
 
-    const removeBtn = document.createElement('button');
-    removeBtn.innerText = "X";
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = "deleteBtn";
+    deleteBtn.innerText = "X";
 
-    removeBtn.addEventListener("click", removeTask);
+    deleteBtn.addEventListener("click", removeTask);
 
-    masterDiv.append(removeBtn);
+    masterDiv.append(deleteBtn);
 
     tdList.append(masterDiv);
   })
@@ -166,40 +241,57 @@ document.addEventListener('click', (e) => {
 })
 
 function updateDB() {
-  const currentListID = localStorage.getItem("currentListID");
   localStorage.setItem(currentListID, JSON.stringify(currentList));
 
   drawTodoList();
 }
 
 function createNewList() {
-  const currentListID = `tdl-${Date.now()}`;
+  const newListID = `tdl-${Date.now()}`;
   const date = new Date().toISOString().substr(0, 10);
   const newTodoListObj = {
     "title": `Todo List: ${date}`,
     "tasks": []
   }
+  currentListID = newListID;
   localStorage.setItem("currentListID", currentListID);
-  localStorage.setItem(currentListID, JSON.stringify(newTodoListObj));
+  localStorage.setItem(newListID, JSON.stringify(newTodoListObj));
 
-  currentList = JSON.parse(localStorage.getItem(localStorage.getItem("currentListID")));
+  currentList = JSON.parse(localStorage.getItem(currentListID));
   drawTodoList();
+  dropdownList.style.zIndex = "-1";
+  setTimeout(() => { dropdownList.style.zIndex = "1" }, 100);
+  tdTitle.focus();
+
+  const selection = window.getSelection();
+  const range = document.createRange();
+  range.selectNodeContents(tdTitle);
+  selection.removeAllRanges();
+  selection.addRange(range);
 }
 newListBtn.addEventListener('click', createNewList);
 
+function updateCurrentListID(newListID) {
+  currentListID = newListID;
+  localStorage.setItem('currentListID', currentListID);
+
+  currentList = JSON.parse(localStorage.getItem(newListID));
+}
+
 function initialLoad() {
-  if (!localStorage.getItem("currentListID")) {
-    const currentListID = `tdl-${Date.now()}`;
+  if (!currentListID || !localStorage.getItem(currentListID)) {
+    const newListID = `tdl-${Date.now()}`;
     const date = new Date().toISOString().substr(0, 10);
     const newTodoListObj = {
       "title": `Todo List: ${date}`,
       "tasks": []
     }
+    currentListID = newListID;
     localStorage.setItem("currentListID", currentListID);
-    localStorage.setItem(currentListID, JSON.stringify(newTodoListObj));
+    localStorage.setItem(newListID, JSON.stringify(newTodoListObj));
   }
 
-  currentList = JSON.parse(localStorage.getItem(localStorage.getItem("currentListID")));
+  currentList = JSON.parse(localStorage.getItem(currentListID));
   drawTodoList();
 }
 

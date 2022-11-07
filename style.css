@@ -29,13 +29,17 @@ body {
   justify-content: flex-end;
 }
 
+#titleContainer {
+  width: 100%;
+}
+
 #todoTitle {
   cursor: pointer;
   margin: 20px auto;
   width: fit-content;
   max-width: 85%;
   padding: 2px 5px;
-  font-size: 20px;  
+  font-size: 20px;
   border-radius: 4px;
 }
 
@@ -67,29 +71,70 @@ body {
 }
 
 #dropdownList {
-  visibility: hidden;
+  display: none;
   margin-right: 20px;
   min-width: 200px;
+  max-width: 300px;
   padding: 10px 0px;
   background: #636363;
   text-align: center;
-  z-index: 10;
+  z-index: 1;
 }
 
 #dropdownBtn:hover + #dropdownList,
 #dropdownList:hover {
-  visibility: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: fit-content;
 }
 
 #taskList {
-  margin: 20px 0px;
+  margin: 10px 0px;
+}
+
+#taskList div {
+  display: flex;
+  width: 100%;
+  padding: 4px 0px;
 }
 
 #taskList div:hover,
 #createNewList:hover {
   background-color: #797979;
   cursor: pointer;
+}
+
+#taskList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 85%;
+}
+
+.deleteBtn {
+  flex-shrink: 0;
+  align-self: center;
+  height: 20px;
+  width: 20px;
+  visibility: hidden;
+}
+
+.taskDiv:hover div + .deleteBtn {
+  display: block;
+}
+
+.dropdownTaskDiv {
+  display: flex;
+}
+
+.dropdownTaskDiv:hover div + .deleteBtn {
+  visibility: visible;
+}
+
+#confirmListDelete {
+  width: 100%;
+  position: absolute;
 }
 
 #addTodo {
@@ -107,6 +152,7 @@ body {
 
 #addTodo:hover {
   background-color: #d3d3d3;
+  cursor: pointer;
 }
 
 #addTodo:active {
@@ -119,7 +165,8 @@ body {
 }
 
 .taskDiv {
-  display: flex;
+  display: inline-flex;
+  width: 100%;
   align-items: baseline;
   margin-bottom: 10px;
   line-height: 28px;
@@ -152,18 +199,6 @@ body {
 
 .taskDiv div[data-completed="true"] {
   text-decoration: line-through;
-}
-
-.taskDiv button {
-  flex-shrink: 0;
-  align-self: center;
-  height: 20px;
-  width: 20px;
-  visibility: hidden;
-}
-
-.taskDiv:hover div + button {
-  visibility: visible;
 }
 
 .taskDiv div:focus {
